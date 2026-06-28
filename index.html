@@ -1234,7 +1234,13 @@
     .dest-highlight-card:hover { background: var(--card-hover); border-color: rgba(0,180,216,0.2); }
     .dh-icon { font-size: 1.6rem; flex-shrink: 0; line-height: 1; margin-top: 0.1rem; }
     .dh-body strong { display: block; font-size: 0.95rem; font-weight: 700; margin-bottom: 0.3rem; }
-    .dh-body p { font-size: 0.85rem; color: var(--text-muted); line-height: 1.55; margin: 0; }
+    .dh-body p { font-size: 0.85rem; color: var(--text-muted); line-height: 1.55; margin: 0 0 0.6rem; }
+    .dh-meta { display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap; margin-top: 0.4rem; }
+    .dh-ticket { font-size: 0.75rem; font-weight: 700; padding: 0.2rem 0.6rem; border-radius: 100px; letter-spacing: 0.02em; }
+    .dh-ticket.free { background: rgba(82,183,136,0.15); border: 1px solid rgba(82,183,136,0.3); color: var(--green); }
+    .dh-ticket.paid { background: rgba(245,158,11,0.12); border: 1px solid rgba(245,158,11,0.3); color: var(--amber); }
+    .dh-link { font-size: 0.78rem; font-weight: 600; color: var(--teal); text-decoration: none; transition: var(--transition); }
+    .dh-link:hover { color: #7dd3fc; text-decoration: underline; }
   </style>
 </head>
 <body>
@@ -2373,11 +2379,11 @@
           'Para el viajero con camper, Oslo es el punto de partida perfecto: el camping Ekeberg tiene vistas al fiordo y al skyline de la ciudad, y está a apenas 15 minutos del centro en tranvía.',
         ],
         highlights: [
-          { icon: '🗿', name: 'Parque Vigeland', desc: 'El mayor parque de esculturas de un solo artista del mundo. 212 esculturas en bronce, granito y forja. Entrada gratuita.' },
-          { icon: '⚔️', name: 'Museo Vikingo', desc: 'Tres drakkars originales del siglo IX perfectamente conservados. El museo más visitado de Noruega.' },
-          { icon: '🎨', name: 'Museo Munch', desc: 'La mayor colección de obras de Edvard Munch, incluidas varias versiones de El Grito. Edificio moderno junto al fiordo.' },
-          { icon: '🏰', name: 'Fortaleza Akershus', desc: 'Castillo medieval del siglo XIV con vistas panorámicas al fiordo. Entrada gratuita al recinto exterior.' },
-          { icon: '🚢', name: 'Aker Brygge', desc: 'Puerto reformado con restaurantes, tiendas y ambiente mediterráneo en verano. El mejor lugar para el atardecer.' },
+          { icon: '🗿', name: 'Parque Vigeland', desc: 'El mayor parque de esculturas de un solo artista del mundo. 212 esculturas en bronce, granito y forja. Abierto las 24h todo el año.', ticket: 'Entrada gratuita', url: 'https://www.vigeland.museum.no' },
+          { icon: '⚔️', name: 'Museo Vikingo', desc: 'Tres drakkars originales del siglo IX perfectamente conservados. El museo más visitado de Noruega. Está en el barrio de Bygdøy.', ticket: '~200 NOK adulto / ~100 NOK niño (5 años: gratis)', url: 'https://www.khm.uio.no/english/visit-us/viking-ship-museum/' },
+          { icon: '🎨', name: 'Museo Munch', desc: 'La mayor colección de obras de Edvard Munch, incluidas varias versiones de El Grito. Edificio icónico de 13 plantas junto al Oslofjord.', ticket: '180 NOK adulto / gratis menores de 18 años', url: 'https://www.munchmuseet.no' },
+          { icon: '🏰', name: 'Fortaleza Akershus', desc: 'Castillo medieval del siglo XIV con vistas panorámicas al fiordo. El recinto exterior es gratuito; la fortaleza interior tiene entrada.', ticket: 'Recinto: gratis · Interior fortaleza: ~100 NOK', url: 'https://www.forsvarsbygg.no/festningene/festningene/akershus-festning/' },
+          { icon: '🚢', name: 'Aker Brygge', desc: 'Puerto reformado con restaurantes, tiendas y ambiente mediterráneo en verano. El mejor lugar para el atardecer sobre el fiordo.', ticket: 'Acceso gratuito', url: null },
         ],
         kids: 'Los drakkars vikingos son mágicos para niños de 5 años. En el Parque Vigeland pueden correr libremente entre las esculturas sin restricciones. En verano, las playas del fiordo (Huk, Bygdøy) son perfectas para bañarse.',
         days: ['dc-0', 'dc-1'],
@@ -2405,10 +2411,10 @@
           'El lago Mjøsa, con sus 117 km de longitud, es perfecto para actividades acuáticas en verano. El vapor histórico "Skibladner" (el barco de vapor más antiguo del mundo en servicio) realiza cruceros por el lago en temporada estival.',
         ],
         highlights: [
-          { icon: '🏘️', name: 'Maihaugen', desc: 'Museo al aire libre con 185 edificios históricos noruegos. El más grande de Escandinavia. Absolutamente imprescindible.' },
-          { icon: '🎿', name: 'Trampolín Olímpico', desc: 'El trampolín de los JJOO de 1994 con telecabina hasta la cima. Vistas épicas del lago y el valle. Activo en verano.' },
-          { icon: '🚢', name: 'Vapor Skibladner', desc: 'El barco de vapor más antiguo del mundo en servicio activo (1856). Cruceros de verano por el lago Mjøsa.' },
-          { icon: '🛷', name: 'Pista de Bobsled', desc: 'La pista olímpica de Hunderfossen permite experiencias de trineo estival. Emocionante para toda la familia.' },
+          { icon: '🏘️', name: 'Maihaugen', desc: 'Museo al aire libre con 185 edificios históricos noruegos. El más grande de Escandinavia. Talleres para niños incluidos en la entrada.', ticket: '~170 NOK adulto / ~90 NOK niño (4-17 años)', url: 'https://www.maihaugen.no' },
+          { icon: '🎿', name: 'Trampolín Olímpico', desc: 'El trampolín de los JJOO de 1994 con telecabina hasta la cima. Vistas épicas del lago Mjøsa y el valle. Activo en verano.', ticket: '~100 NOK adulto / ~60 NOK niño (telecabina incluida)', url: 'https://www.olympiaparken.no' },
+          { icon: '🚢', name: 'Vapor Skibladner', desc: 'El barco de vapor más antiguo del mundo en servicio activo (1856). Cruceros de verano por el lago Mjøsa. Opera julio–agosto.', ticket: '~350 NOK adulto / ~175 NOK niño · Reserva recomendada', url: 'https://www.skibladner.no' },
+          { icon: '🛷', name: 'Pista de Bobsled', desc: 'La pista olímpica de Hunderfossen permite experiencias de trineo estival sobre ruedas (Wheeledbob). Mínimo 10 años de edad.', ticket: '~250 NOK por persona (mínimo 10 años)', url: 'https://www.olympiaparken.no' },
         ],
         kids: 'El Maihaugen tiene actividades específicas para niños donde pueden vestirse con trajes históricos y participar en talleres. Los animales de granja y los edificios de cuento son un éxito garantizado a los 5 años.',
         days: ['dc-2'],
@@ -2434,10 +2440,10 @@
           'La calle principal Bergmannsgata concentra las casas más fotogénicas: edificios de madera del XVIII con tejados de turba, ahora convertidos en tiendas de artesanía, cafés y galerías. El mercado semanal de verano (Martnan) es una tradición que lleva celebrándose ininterrumpidamente desde el siglo XVII.',
         ],
         highlights: [
-          { icon: '⛏️', name: 'Fundición Smelthytta', desc: 'Museo industrial en la fundición original. Visitas guiadas a las minas subterráneas. La mejor atracción de la ciudad.' },
-          { icon: '⛪', name: 'Iglesia de Røros', desc: 'Iglesia barroca de 1784, la más grande de Noruega en su época. Capacidad para 1.600 personas en una ciudad de 3.500.' },
-          { icon: '🏘️', name: 'Bergmannsgata', desc: 'La calle histórica con las casas de madera más fotogénicas. Todo el centro es Patrimonio UNESCO.' },
-          { icon: '🦌', name: 'Renos en libertad', desc: 'Los alrededores de Røros tienen manadas de renos semisalvajes. Es habitual verlos desde la carretera.' },
+          { icon: '⛏️', name: 'Fundición Smelthytta', desc: 'Museo industrial en la fundición original del siglo XVII. Visitas guiadas a las minas subterráneas en horario fijo. Reservar en temporada alta.', ticket: '~180 NOK adulto / ~90 NOK niño · Visita mina: ~120 NOK extra', url: 'https://www.rorosmuseet.no' },
+          { icon: '⛪', name: 'Iglesia de Røros', desc: 'Iglesia barroca de 1784, declarada Patrimonio UNESCO junto al resto del centro histórico. Una de las iglesias más grandes de Noruega.', ticket: '~80 NOK adulto / gratis menores de 16 años', url: 'https://www.nidarosdomen.no/roros-kirke' },
+          { icon: '🏘️', name: 'Bergmannsgata', desc: 'La calle principal con las casas de madera del siglo XVIII más fotogénicas de Noruega. Pasear libremente; tiendas y cafés al alcance.', ticket: 'Acceso gratuito', url: null },
+          { icon: '🦌', name: 'Renos en libertad', desc: 'Manadas de renos semisalvajes en los alrededores. Frecuentes en la carretera Røros–Femundsmarka. Sin visita organizada necesaria.', ticket: 'Gratuito (avistamiento en ruta)', url: null },
         ],
         kids: 'La mina subterránea es una aventura impresionante para los niños —como entrar en una película de enanos. Las calles empedradas y las casas de colores son mágicas. Si hay suerte, ver renos cerca de la ciudad.',
         days: ['dc-3'],
@@ -2463,10 +2469,10 @@
           'El puente Gamle Bybro del siglo XVIII, la fortaleza Kristiansten en lo alto de la colina y el mercado histórico de Torvet completan una ciudad que sorprende por su combinación de monumentalidad histórica y ambiente distendido de estudiantes.',
         ],
         highlights: [
-          { icon: '⛩️', name: 'Catedral de Nidaros', desc: 'El edificio gótico más grande de Escandinavia. Lugar de coronación de los reyes noruegos. Impresionante rosetón y fachada.' },
-          { icon: '🌉', name: 'Bakklandet', desc: 'Barrio de casas de colores sobre el río. Las mejores cafeterías de la ciudad y ambiente bohemio. Cruzar el Gamle Bybro.' },
-          { icon: '🏰', name: 'Fortaleza Kristiansten', desc: 'Fortaleza del XVII en la colina con vistas panorámicas de la ciudad y el fiordo de Trondheim.' },
-          { icon: '🐟', name: 'Mercado de Torvet', desc: 'La plaza mayor con el mercado de pescado y la estatua ecuestre de Olaf Tryggvason en el centro.' },
+          { icon: '⛩️', name: 'Catedral de Nidaros', desc: 'El edificio gótico más grande de Escandinavia. Lugar de coronación de los reyes noruegos. El rosetón original del siglo XIII es impresionante.', ticket: '~120 NOK adulto / gratis menores de 18 años · Torres: ~50 NOK extra', url: 'https://www.nidarosdomen.no' },
+          { icon: '🌉', name: 'Bakklandet & Gamle Bybro', desc: 'Barrio de casas de madera de colores sobre el río Nid. Las mejores cafeterías de la ciudad. Cruzar el puente Gamle Bybro del siglo XVIII.', ticket: 'Acceso gratuito', url: null },
+          { icon: '🏰', name: 'Fortaleza Kristiansten', desc: 'Fortaleza del siglo XVII en la colina oriental. Vistas panorámicas de la ciudad, el río y el Trondheimsfjord.', ticket: 'Acceso gratuito (recinto exterior) · Interior: ~80 NOK', url: 'https://www.forsvarsbygg.no/festningene/festningene/kristiansten-festning/' },
+          { icon: '🐟', name: 'Mercado de Torvet', desc: 'La plaza mayor con mercado de pescado fresco y la estatua ecuestre de Olaf Tryggvason. Ambiente local auténtico por las mañanas.', ticket: 'Acceso gratuito', url: null },
         ],
         kids: 'La catedral de Nidaros tiene visitas específicas para familias. Bakklandet es perfecto para que los niños corran sin peligro de tráfico. El área de juegos junto al río es un alivio para los pequeños.',
         days: ['dc-4'],
@@ -2493,10 +2499,10 @@
           'El Atlanterhavsparken (Parque del Atlántico) es uno de los acuarios más grandes de Escandinavia y tiene exhibiciones excepcionales de la fauna marina local, incluyendo focas, nutrias y tiburones de aguas frías. Perfecto para una tarde si el tiempo no acompaña.',
         ],
         highlights: [
-          { icon: '🏛️', name: 'Centro Art Nouveau', desc: 'Todo el casco histórico reconstruido en 1904-07 en estilo modernista. El mejor conjunto Art Nouveau del norte de Europa.' },
-          { icon: '⛰️', name: 'Monte Aksla', desc: '418 escalones hasta la cima (o teleférico). Las mejores vistas de Noruega occidental sobre ciudad, fiordos y océano.' },
-          { icon: '🦭', name: 'Atlanterhavsparken', desc: 'Acuario del Atlántico con focas, tiburones y fauna marina noruega. Uno de los mejores de Escandinavia.' },
-          { icon: '🎨', name: 'Museo Art Nouveau', desc: 'El único museo dedicado exclusivamente al Art Nouveau en Noruega, en un edificio de 1905 perfectamente restaurado.' },
+          { icon: '🏛️', name: 'Centro Art Nouveau', desc: 'Todo el casco histórico reconstruido en 1904-07 en estilo Jugendstil. El paseo por las calles del centro es gratuito y extraordinario.', ticket: 'Acceso gratuito (paseo urbano)', url: null },
+          { icon: '⛰️', name: 'Monte Aksla', desc: '418 escalones o teleférico Aksla (Fjellstua) hasta los 189m de cima. Las mejores vistas de Noruega occidental. Restaurante en la cima.', ticket: 'Escaleras: gratuito · Teleférico: ~95 NOK adulto / ~50 NOK niño', url: 'https://www.visitalesund.com/en/aksla' },
+          { icon: '🦭', name: 'Atlanterhavsparken', desc: 'Uno de los acuarios más grandes de Escandinavia. Shows de alimentación de focas a las 13h diariamente. Tiburones, rayas y fauna local.', ticket: '~200 NOK adulto / ~130 NOK niño (3-15 años)', url: 'https://www.atlanterhavsparken.no' },
+          { icon: '🎨', name: 'Museo Art Nouveau', desc: 'El único museo dedicado al Jugendstil en Noruega, en un edificio bancario de 1905. Exposición sobre el incendio de 1904 y la reconstrucción.', ticket: '~100 NOK adulto / gratis menores de 18 años', url: 'https://www.jugendstilsenteret.no' },
         ],
         kids: 'El acuario Atlanterhavsparken tiene shows de alimentación de focas que son un espectáculo asegurado. Los 418 escalones del monte Aksla son una aventura de escalada para los pequeños —llegar arriba da una sensación de logro enorme.',
         days: ['dc-5'],
@@ -2522,10 +2528,10 @@
           'El pueblo de Geiranger (apenas 250 habitantes) vive casi exclusivamente del turismo de verano. Los cruceros hacen que en agosto el lugar esté muy concurrido durante el día, pero al atardecer —cuando los barcos se marchan— recupera una quietud mágica. Dormir con el camper junto al fiordo es una experiencia que no se olvida.',
         ],
         highlights: [
-          { icon: '💦', name: 'Las Siete Hermanas', desc: 'La cascada símbolo del fiordo. Siete caídas paralelas de 250m. Se ve perfectamente desde el ferry o la orilla opuesta.' },
-          { icon: '🚗', name: 'Mirador Dalsnibba', desc: '1.476m sobre el mar, el mirador de fiordo más alto de Noruega en coche. La vista más dramática del Geirangerfjord.' },
-          { icon: '⛴️', name: 'Ferry del Fiordo', desc: 'El trayecto Geiranger-Hellesylt (1h) es obligatorio. Crucero entre cascadas y paredes de roca verticales.' },
-          { icon: '🛤️', name: 'Ruta de las Águilas', desc: 'La Ørnvegen (Ruta de las Águilas) baja desde Eidsdal hasta el fiordo con 11 curvas y miradores espectaculares.' },
+          { icon: '💦', name: 'Las Siete Hermanas', desc: 'La cascada más famosa del fiordo: siete caídas paralelas de 250m. Visible gratis desde la orilla o inmejorable desde el ferry.', ticket: 'Gratuito (desde orilla o carretera)', url: null },
+          { icon: '🚗', name: 'Mirador Dalsnibba', desc: '1.476m sobre el mar, el mirador de fiordo más alto de Noruega accesible en coche. La carretera Nibbevegen tiene peaje. Probable nieve en agosto.', ticket: '~120 NOK por vehículo (peaje Nibbevegen)', url: 'https://www.dalsnibba.no' },
+          { icon: '⛴️', name: 'Ferry Geiranger–Hellesylt', desc: 'Trayecto de 1h entre cascadas y paredes de roca verticales. El ferry de la compañía Fjord1 sale varias veces al día. Reservar en temporada.', ticket: '~260 NOK adulto / ~130 NOK niño · Coche adicional: ~580 NOK', url: 'https://www.fjord1.no' },
+          { icon: '🛤️', name: 'Ruta de las Águilas (Ørnvegen)', desc: 'Carretera de montaña con 11 curvas espectaculares desde Eidsdal hasta el fiordo. Miradores en cada curva. Se combina con el ferry.', ticket: 'Gratuito (carretera pública)', url: null },
         ],
         kids: 'El ferry es el favorito garantizado de todos los niños —un barco de verdad durante una hora entre cascadas y montañas. En Dalsnibba es probable ver nieve en agosto, lo que para una niña de 5 años es magia pura.',
         days: ['dc-6'],
@@ -2552,10 +2558,10 @@
           'El Sognefjord Road trip que conecta Flåm con Bergen a través de ferrys y la Scenic Route Aurlandsvegen (la "Carretera de la Nieve") es uno de los recorridos más espectaculares de la ruta. El mirador de Stegastein, a 650m sobre el fiordo, ofrece una de las vistas más dramáticas del viaje.',
         ],
         highlights: [
-          { icon: '🚂', name: 'Flåmsbana', desc: 'El tren de montaña más espectacular del mundo. 20km, 863m de desnivel, 55 minutos de paisajes increíbles. Reservar con antelación.' },
-          { icon: '⛴️', name: 'Crucero Nærøyfjord', desc: 'El fiordo más estrecho de Europa, Patrimonio UNESCO. El crucero Flåm-Gudvangen pasa bajo paredes de 1.700m.' },
-          { icon: '🌊', name: 'Mirador Stegastein', desc: 'Plataforma de madera a 650m sobre el Aurlandsfjord. Una de las mejores vistas de todo el viaje por Noruega.' },
-          { icon: '🏊', name: 'Kayak en el fiordo', desc: 'Varias empresas ofrecen kayak en el Aurlandsfjord. Remar entre paredes de 1.000m es una experiencia transformadora.' },
+          { icon: '🚂', name: 'Flåmsbana', desc: 'El tren de montaña más espectacular del mundo: 20km, 863m de desnivel, 55 min. Parada en cascada Kjosfossen. Reservar con semanas de antelación.', ticket: '~450 NOK adulto / ~225 NOK niño (ida) · Ida y vuelta: ~650/325 NOK', url: 'https://www.flamsbana.no' },
+          { icon: '⛴️', name: 'Crucero Nærøyfjord', desc: 'El fiordo más estrecho de Europa, Patrimonio UNESCO. Crucero Flåm–Gudvangen bajo paredes de 1.700m. Operado por Fjord Tours / The Fjords.', ticket: '~450 NOK adulto / ~225 NOK niño (Flåm–Gudvangen)', url: 'https://www.thefjords.com' },
+          { icon: '🌊', name: 'Mirador Stegastein', desc: 'Plataforma cantilevered de madera a 650m sobre el Aurlandsfjord. A 30min de Flåm por la Aurlandsvegen (cerrada en invierno, abierta en agosto).', ticket: 'Acceso gratuito', url: null },
+          { icon: '🏊', name: 'Kayak en el fiordo', desc: 'Empresas en Flåm ofrecen kayak guiado o autoguiado en el Aurlandsfjord. Remar entre paredes de 1.000m. Mínimo 7 años según empresa.', ticket: '~450–600 NOK por persona (2-3h guiado)', url: 'https://www.njordexpeditions.com' },
         ],
         kids: 'El Flåmsbana es perfecto para niños: el tren, los túneles, la parada de la cascada con la figura bailando, y la emoción de los frenos humeando en las curvas. Combinar tren de subida con kayak o ferry de bajada.',
         days: ['dc-7'],
@@ -2582,10 +2588,10 @@
           'El mercado de pescado (Fisketorget) en el puerto ha estado funcionando ininterrumpidamente durante 800 años. Aunque hoy es más orientado al turismo que antaño, sigue siendo el lugar perfecto para probar salmón fresco, langostinos, cangrejos y toda la riqueza del mar noruego.',
         ],
         highlights: [
-          { icon: '🏘️', name: 'Bryggen', desc: 'Las casas hanseáticas medievales del puerto, Patrimonio UNESCO. El símbolo de Bergen y de toda Noruega occidental.' },
-          { icon: '🚡', name: 'Fløibanen', desc: 'Funicular que sube al monte Fløyen en 8 minutos. Vistas incomparables y punto de partida para senderismo en el bosque.' },
-          { icon: '🐟', name: 'Mercado de Pescado', desc: '800 años de historia comercial. El mejor lugar para probar salmón, langostinos y cangrejo fresco directamente del fiordo.' },
-          { icon: '🎻', name: 'Grieg Museum', desc: 'La villa de Edvard Grieg en Troldhaugen, a 8km del centro. El estudio donde compuso Peer Gynt con vistas al lago.' },
+          { icon: '🏘️', name: 'Bryggen', desc: 'Casas hanseáticas del siglo XIV en el puerto, Patrimonio UNESCO. El paseo por los callejones traseros es gratuito. Museos internos con entrada.', ticket: 'Paseo exterior: gratuito · Museo Hanseático: ~120 NOK adulto / gratis -18', url: 'https://www.bymuseet.no' },
+          { icon: '🚡', name: 'Fløibanen', desc: 'Funicular que sube al monte Fløyen (320m) en 8 minutos. Vistas de la ciudad y los fiordos. Bosque, ciervos y toboganes de madera en la cima.', ticket: '~160 NOK adulto / ~80 NOK niño (ida y vuelta)', url: 'https://www.floibanen.no' },
+          { icon: '🐟', name: 'Mercado de Pescado', desc: '800 años de historia. Langostinos, salmón, cangrejo del rey y ballena. Cubierto desde 2012 (Fisketorget). Precios de restaurante, pero experiencia única.', ticket: 'Entrada gratuita · Degustaciones desde ~80 NOK', url: 'https://www.fisketorget.no' },
+          { icon: '🎻', name: 'Grieg Museum Troldhaugen', desc: 'Villa de Edvard Grieg a 8km del centro. El estudio donde compuso Peer Gynt junto al lago Nordåsvatnet. Conciertos en el Troldsalen en verano.', ticket: '~130 NOK adulto / ~65 NOK niño · Conciertos: desde ~250 NOK', url: 'https://www.griegmuseum.no' },
         ],
         kids: 'El Fløibanen es una aventura para los niños: el funicular, el bosque arriba, los ciervos que se acercan, y los toboganes de madera en el parque de la cima. El mercado de pescado con sus cangrejos en vivo siempre genera reacciones de asco-fascinación en los pequeños.',
         days: ['dc-8'],
@@ -2612,10 +2618,10 @@
           'El trayecto de Bergen a Eidfjord es en sí mismo una experiencia: se pasa por el puente colgante de Hardanger (la mayor ingeniería civil de Noruega), los túneles bajo los fiordos, y el tranquilo pueblo de Øystese con sus huertos a orillas del agua.',
         ],
         highlights: [
-          { icon: '💦', name: 'Vøringsfossen', desc: 'La cascada más famosa de Noruega. 183m de caída libre hasta el cañón del río Bjoreio. Vista de vértigo absoluto.' },
-          { icon: '🦌', name: 'Hardangervidda', desc: 'El mayor altiplano de Europa del Norte con 10.000 renos salvajes. En agosto es frecuente verlos a pocos metros.' },
-          { icon: '💦', name: 'Steinsdalsfossen', desc: 'Cascada única: un sendero pasa por detrás del agua. Los niños pueden meterse entre el agua y la roca.' },
-          { icon: '🌸', name: 'Hardangerfjord', desc: 'El cuarto fiordo más largo del mundo, con orillas de huertos de manzanos. El ferry cruzar el fiordo es imprescindible.' },
+          { icon: '💦', name: 'Vøringsfossen', desc: '183m de caída libre, una de las cascadas más altas de Noruega. Dos miradores: el superior (gratuito) y el inferior con pasarela nueva (de pago).', ticket: 'Mirador superior: gratuito · Mirador inferior (pasarela): ~100 NOK', url: 'https://www.voringsfossen.no' },
+          { icon: '🦌', name: 'Hardangervidda', desc: 'El mayor altiplano de Europa del Norte (8.000 km²) con 10.000 renos salvajes. Accesible desde la RV7. En agosto frecuente verlos a pocos metros.', ticket: 'Acceso gratuito · Centro de visitantes Eidfjord: ~80 NOK', url: 'https://www.hardangervidda.com' },
+          { icon: '💦', name: 'Steinsdalsfossen', desc: 'Cascada junto a Norheimsund (35km de Eidfjord) donde un sendero pasa literalmente por detrás del agua. Sin barreras, se puede tocar la cascada.', ticket: 'Acceso gratuito · Aparcamiento: ~60 NOK', url: null },
+          { icon: '🌸', name: 'Hardangerfjord en ferry', desc: 'Cruzar el Hardangerfjord en ferry entre Brimnes y Bruravik (10 min). Imprescindible para apreciar la escala del cuarto fiordo más largo del mundo.', ticket: '~40 NOK adulto / ~20 NOK niño · Coche: ~120 NOK', url: 'https://www.skyss.no' },
         ],
         kids: 'Steinsdalsfossen es la atracción definitiva para niños: ponerse detrás de una cascada sin mojarse (casi) es algo que no olvidarán. Los renos en Hardangervidda —si hay suerte de verlos de cerca— son también un momento mágico.',
         days: ['dc-9', 'dc-10'],
@@ -2674,7 +2680,14 @@
       hlEl.innerHTML = dest.highlights.map(h => `
         <div class="dest-highlight-card">
           <div class="dh-icon">${h.icon}</div>
-          <div class="dh-body"><strong>${h.name}</strong><p>${h.desc}</p></div>
+          <div class="dh-body">
+            <strong>${h.name}</strong>
+            <p>${h.desc}</p>
+            <div class="dh-meta">
+              <span class="dh-ticket ${h.ticket && /gratuito|gratis|gratuita/i.test(h.ticket) && !/NOK/i.test(h.ticket) ? 'free' : 'paid'}">${h.ticket || ''}</span>
+              ${h.url ? `<a class="dh-link" href="${h.url}" target="_blank" rel="noopener">Más info →</a>` : ''}
+            </div>
+          </div>
         </div>`).join('');
 
       // Store dest for map tab
