@@ -9,6 +9,8 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,700;0,800;1,700&display=swap" rel="stylesheet" />
   <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
   <style>
     /* ===== CSS CUSTOM PROPERTIES ===== */
@@ -984,6 +986,261 @@
       .map-wrapper iframe { height: 380px; }
       nav { padding: 0 1.25rem; }
     }
+
+    /* ===== DESTINATION MODAL ===== */
+    #dest-modal {
+      position: fixed;
+      inset: 0;
+      z-index: 2000;
+      background: var(--navy);
+      overflow-y: auto;
+      display: none;
+      flex-direction: column;
+      transform: translateY(100%);
+      transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    #dest-modal.open {
+      transform: translateY(0);
+    }
+    .dest-topbar {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      background: rgba(7,13,26,0.92);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border);
+      padding: 0 1.5rem;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-shrink: 0;
+    }
+    .dest-back-btn {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      padding: 0.4rem 0.75rem;
+      border-radius: 8px;
+      transition: var(--transition);
+    }
+    .dest-back-btn:hover { background: var(--card-bg); color: var(--text); }
+    .dest-topbar-name {
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--text);
+    }
+    .dest-hero {
+      position: relative;
+      height: 320px;
+      flex-shrink: 0;
+      overflow: hidden;
+    }
+    @media (max-width: 600px) { .dest-hero { height: 220px; } }
+    .dest-hero-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    .dest-hero-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to top, rgba(7,13,26,1) 0%, rgba(7,13,26,0.5) 40%, transparent 100%);
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      padding: 2rem;
+    }
+    .dest-hero-title {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2rem, 6vw, 3.2rem);
+      font-weight: 800;
+      line-height: 1.1;
+      margin-bottom: 0.5rem;
+    }
+    .dest-hero-badges {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+    .dest-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 0.25rem 0.7rem;
+      border-radius: 100px;
+    }
+    .dest-badge-unesco { background: rgba(245,158,11,0.2); border: 1px solid rgba(245,158,11,0.4); color: var(--amber); }
+    .dest-badge-days { background: rgba(0,180,216,0.12); border: 1px solid rgba(0,180,216,0.3); color: var(--teal); }
+    .dest-content {
+      flex: 1;
+      max-width: 820px;
+      margin: 0 auto;
+      width: 100%;
+      padding: 0 1.5rem 4rem;
+    }
+    .dest-tabs {
+      display: flex;
+      gap: 0;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 2rem;
+      position: sticky;
+      top: 60px;
+      background: var(--navy);
+      z-index: 5;
+      padding-top: 1.5rem;
+    }
+    .dest-tab-btn {
+      background: none;
+      border: none;
+      color: var(--text-dim);
+      font-size: 0.9rem;
+      font-weight: 600;
+      padding: 0.75rem 1.25rem;
+      cursor: pointer;
+      position: relative;
+      transition: var(--transition);
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+    .dest-tab-btn:hover { color: var(--text-muted); }
+    .dest-tab-btn.active { color: var(--teal); }
+    .dest-tab-btn.active::after {
+      content: '';
+      position: absolute;
+      bottom: -1px; left: 0; right: 0;
+      height: 2px;
+      background: var(--teal);
+      border-radius: 2px 2px 0 0;
+    }
+    .dest-panel { display: none; }
+    .dest-panel.active { display: block; }
+    .dest-description {
+      color: var(--text-muted);
+      font-size: 1rem;
+      line-height: 1.8;
+      margin-bottom: 1.5rem;
+    }
+    .dest-description p { margin-bottom: 1rem; }
+    .dest-kids-callout {
+      background: rgba(82,183,136,0.08);
+      border: 1px solid rgba(82,183,136,0.2);
+      border-radius: var(--radius);
+      padding: 1rem 1.25rem;
+      display: flex;
+      gap: 0.75rem;
+      align-items: flex-start;
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      margin-bottom: 1.5rem;
+    }
+    .dest-kids-callout strong { color: var(--green); }
+    .dest-days-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-bottom: 0.5rem;
+    }
+    .dest-days-label {
+      font-size: 0.75rem;
+      color: var(--text-dim);
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 0.6rem;
+    }
+    .dest-day-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      background: rgba(0,180,216,0.1);
+      border: 1px solid rgba(0,180,216,0.25);
+      color: var(--teal);
+      font-size: 0.8rem;
+      font-weight: 600;
+      padding: 0.3rem 0.8rem;
+      border-radius: 100px;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+    .dest-day-link:hover { background: rgba(0,180,216,0.2); }
+    .dest-highlights-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 1rem;
+    }
+    .dest-highlight-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.1rem;
+      display: flex;
+      gap: 0.85rem;
+      align-items: flex-start;
+      transition: var(--transition);
+    }
+    .dest-highlight-card:hover { background: var(--card-hover); border-color: rgba(0,180,216,0.2); }
+    .dest-hl-icon { font-size: 1.5rem; flex-shrink: 0; line-height: 1; margin-top: 0.1rem; }
+    .dest-hl-name { font-size: 0.9rem; font-weight: 700; margin-bottom: 0.25rem; }
+    .dest-hl-desc { font-size: 0.8rem; color: var(--text-muted); line-height: 1.5; }
+    #dest-map {
+      height: 420px;
+      border-radius: var(--radius);
+      overflow: hidden;
+      border: 1px solid var(--border);
+      margin-bottom: 1rem;
+    }
+    @media (max-width: 600px) { #dest-map { height: 300px; } }
+    .dest-map-caption {
+      font-size: 0.8rem;
+      color: var(--text-dim);
+      text-align: center;
+    }
+    /* Override Leaflet popup to match dark theme */
+    .leaflet-popup-content-wrapper {
+      background: var(--navy-3) !important;
+      color: var(--text) !important;
+      border: 1px solid var(--border) !important;
+      box-shadow: var(--shadow) !important;
+      border-radius: 10px !important;
+    }
+    .leaflet-popup-tip { background: var(--navy-3) !important; }
+    .leaflet-popup-content { font-family: 'Inter', sans-serif !important; font-size: 0.85rem !important; }
+    .leaflet-container { background: #0d1f2d !important; }
+    /* Alias classes for modal HTML elements */
+    .dest-back { display: flex; align-items: center; gap: 0.5rem; background: none; border: none; color: var(--text-muted); font-size: 0.9rem; font-weight: 600; cursor: pointer; padding: 0.4rem 0.75rem; border-radius: 8px; transition: var(--transition); min-width: 80px; }
+    .dest-back:hover { background: var(--card-bg); color: var(--text); }
+    .dest-topbar-title { font-size: 1rem; font-weight: 700; color: var(--text); text-align: center; }
+    .dest-hero-name { font-family: 'Playfair Display', serif; font-size: clamp(1.8rem, 5vw, 3rem); font-weight: 800; line-height: 1.1; margin-bottom: 0.35rem; }
+    .dest-hero-tagline { color: rgba(255,255,255,0.75); font-size: 1rem; margin-bottom: 0.75rem; }
+    .dest-driving { display: flex; align-items: center; gap: 0.4rem; font-size: 0.82rem; color: var(--teal); font-weight: 600; }
+    .dest-tabs-bar { display: flex; gap: 0; border-bottom: 1px solid var(--border); position: sticky; top: 60px; background: var(--navy); z-index: 5; padding: 1rem 1.5rem 0; overflow-x: auto; }
+    .dest-kids-box { background: rgba(82,183,136,0.08); border: 1px solid rgba(82,183,136,0.25); border-radius: var(--radius); padding: 1rem 1.25rem; margin-bottom: 1.5rem; }
+    .dest-kids-title { font-size: 0.85rem; font-weight: 700; color: var(--green); margin-bottom: 0.4rem; }
+    .dest-kids-box p { font-size: 0.9rem; color: var(--text-muted); line-height: 1.6; margin: 0; }
+    .dest-days-section { margin-top: 1.5rem; }
+    .dest-days-badges { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 0.5rem; }
+    .dm-day-badge { display: inline-flex; align-items: center; background: rgba(0,180,216,0.1); border: 1px solid rgba(0,180,216,0.25); color: var(--teal); font-size: 0.8rem; font-weight: 600; padding: 0.3rem 0.8rem; border-radius: 100px; cursor: pointer; transition: var(--transition); }
+    .dm-day-badge:hover { background: rgba(0,180,216,0.2); }
+    .dest-highlights-list { display: flex; flex-direction: column; gap: 1rem; padding-top: 1.5rem; }
+    .dest-highlight-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.1rem 1.25rem; display: flex; gap: 1rem; align-items: flex-start; transition: var(--transition); }
+    .dest-highlight-card:hover { background: var(--card-hover); border-color: rgba(0,180,216,0.2); }
+    .dh-icon { font-size: 1.6rem; flex-shrink: 0; line-height: 1; margin-top: 0.1rem; }
+    .dh-body strong { display: block; font-size: 0.95rem; font-weight: 700; margin-bottom: 0.3rem; }
+    .dh-body p { font-size: 0.85rem; color: var(--text-muted); line-height: 1.55; margin: 0; }
   </style>
 </head>
 <body>
@@ -1620,7 +1877,7 @@
       <div class="gallery-grid reveal">
 
         <!-- Oslo: city lights waterfront — verified via unsplash/tERXiNBHWcw -->
-        <div class="gallery-card">
+        <div class="gallery-card" onclick="openDestination('oslo')">
           <img class="gallery-img" src="https://images.unsplash.com/photo-1560698862-c340d3c8bf38?w=800&h=600&fit=crop&auto=format&q=80" alt="Oslo" loading="lazy">
           <div class="gallery-overlay">
             <div class="gallery-name">Oslo</div>
@@ -1629,7 +1886,7 @@
         </div>
 
         <!-- Lillehammer: norway winter fjord landscape — verified via unsplash/zSRqJsMcrAc -->
-        <div class="gallery-card">
+        <div class="gallery-card" onclick="openDestination('lillehammer')">
           <img class="gallery-img" src="https://images.unsplash.com/photo-1513519107127-1bed33748e4c?w=800&h=600&fit=crop&auto=format&q=80" alt="Lillehammer" loading="lazy">
           <div class="gallery-overlay">
             <div class="gallery-name">Lillehammer</div>
@@ -1638,7 +1895,7 @@
         </div>
 
         <!-- Røros: red wooden house on rock — verified via unsplash/nmkhNlC1EiI -->
-        <div class="gallery-card">
+        <div class="gallery-card" onclick="openDestination('roros')">
           <img class="gallery-img" src="https://images.unsplash.com/photo-1604240957006-a961a2920f8b?w=800&h=600&fit=crop&auto=format&q=80" alt="Røros" loading="lazy">
           <div class="gallery-overlay">
             <div class="gallery-name">Røros</div>
@@ -1648,7 +1905,7 @@
         </div>
 
         <!-- Trondheim: multicolored village — verified via unsplash/f6Fid_KXV4Y -->
-        <div class="gallery-card">
+        <div class="gallery-card" onclick="openDestination('trondheim')">
           <img class="gallery-img" src="https://images.unsplash.com/photo-1517904518766-16c4f3ab0293?w=800&h=600&fit=crop&auto=format&q=80" alt="Trondheim" loading="lazy">
           <div class="gallery-overlay">
             <div class="gallery-name">Trondheim</div>
@@ -1657,7 +1914,7 @@
         </div>
 
         <!-- Ålesund: aerial city between water — verified via unsplash/Fr4GbL5d3TA -->
-        <div class="gallery-card">
+        <div class="gallery-card" onclick="openDestination('alesund')">
           <img class="gallery-img" src="https://images.unsplash.com/photo-1511346408292-8754df323b0c?w=800&h=600&fit=crop&auto=format&q=80" alt="Ålesund" loading="lazy">
           <div class="gallery-overlay">
             <div class="gallery-name">Ålesund</div>
@@ -1666,7 +1923,7 @@
         </div>
 
         <!-- Geirangerfjord: fjord mountains — verified via unsplash/FDjX3WVIPs4 -->
-        <div class="gallery-card">
+        <div class="gallery-card" onclick="openDestination('geiranger')">
           <img class="gallery-img" src="https://images.unsplash.com/photo-1669575673050-916db4e5035f?w=800&h=600&fit=crop&auto=format&q=80" alt="Geirangerfjord" loading="lazy">
           <div class="gallery-overlay">
             <div class="gallery-name">Geirangerfjord</div>
@@ -1676,7 +1933,7 @@
         </div>
 
         <!-- Flåm: norway fjord valley — verified via unsplash/WDlmmBrzX5k -->
-        <div class="gallery-card">
+        <div class="gallery-card" onclick="openDestination('flam')">
           <img class="gallery-img" src="https://images.unsplash.com/photo-1738574556434-60a48d6711a0?w=800&h=600&fit=crop&auto=format&q=80" alt="Flåm" loading="lazy">
           <div class="gallery-overlay">
             <div class="gallery-name">Flåm</div>
@@ -1686,7 +1943,7 @@
         </div>
 
         <!-- Bergen: Bryggen colorful wharf — verified via unsplash/AG3EcbcQOjw -->
-        <div class="gallery-card">
+        <div class="gallery-card" onclick="openDestination('bergen')">
           <img class="gallery-img" src="https://images.unsplash.com/photo-1526908234827-dcf46d772c3c?w=800&h=600&fit=crop&auto=format&q=80" alt="Bergen" loading="lazy">
           <div class="gallery-overlay">
             <div class="gallery-name">Bergen</div>
@@ -1695,7 +1952,7 @@
         </div>
 
         <!-- Hardangerfjord: boat on fjord — verified via unsplash/244yXzOilz0 -->
-        <div class="gallery-card">
+        <div class="gallery-card" onclick="openDestination('eidfjord')">
           <img class="gallery-img" src="https://images.unsplash.com/photo-1500207432837-973f6b39fcdc?w=800&h=600&fit=crop&auto=format&q=80" alt="Eidfjord / Hardangerfjord" loading="lazy">
           <div class="gallery-overlay">
             <div class="gallery-name">Eidfjord · Hardangerfjord</div>
@@ -1912,6 +2169,69 @@
     </div>
   </section>
 
+  <!-- ═══════════════════════════════════════════ DESTINATION MODAL -->
+  <div id="dest-modal" role="dialog" aria-modal="true" aria-label="Información del destino">
+    <!-- Topbar -->
+    <div class="dest-topbar">
+      <button class="dest-back" onclick="closeDestination()" aria-label="Volver">
+        <i data-lucide="arrow-left" width="20" height="20"></i>
+        <span>Volver</span>
+      </button>
+      <div id="dm-title" class="dest-topbar-title"></div>
+      <div style="width:80px"></div>
+    </div>
+
+    <!-- Hero -->
+    <div class="dest-hero">
+      <img id="dm-hero-img" src="" alt="" class="dest-hero-img">
+      <div class="dest-hero-overlay">
+        <div id="dm-badge" class="gallery-badge unesco" style="display:none;position:static;margin-bottom:.5rem"></div>
+        <h2 id="dm-hero-title" class="dest-hero-name"></h2>
+        <p id="dm-tagline" class="dest-hero-tagline"></p>
+        <div id="dm-driving" class="dest-driving" style="display:none"></div>
+      </div>
+    </div>
+
+    <!-- Tabs -->
+    <div class="dest-tabs-bar">
+      <button class="dest-tab-btn active" data-dest-tab="desc" onclick="destSwitchTab('desc', this)">📖 Sobre el destino</button>
+      <button class="dest-tab-btn" data-dest-tab="highlights" onclick="destSwitchTab('highlights', this)">⭐ Qué ver</button>
+      <button class="dest-tab-btn" data-dest-tab="map" onclick="destSwitchTab('map', this)">🗺️ Mapa</button>
+    </div>
+
+    <!-- Panel: Descripción -->
+    <div class="dest-panel active" id="dp-desc">
+      <div class="dest-content">
+        <div id="dm-desc" class="dest-description"></div>
+        <div class="dest-kids-box">
+          <div class="dest-kids-title">👧 Con la peque</div>
+          <p id="dm-kids"></p>
+        </div>
+        <div class="dest-days-section">
+          <div class="dest-days-label">Días del itinerario:</div>
+          <div id="dm-days" class="dest-days-badges"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Panel: Highlights -->
+    <div class="dest-panel" id="dp-highlights">
+      <div class="dest-content">
+        <div id="dm-highlights" class="dest-highlights-list"></div>
+      </div>
+    </div>
+
+    <!-- Panel: Mapa -->
+    <div class="dest-panel" id="dp-map">
+      <div class="dest-content" style="padding:1.5rem">
+        <div id="dest-map"></div>
+        <p style="color:var(--text-muted);font-size:.8rem;margin-top:.75rem;text-align:center">
+          Mapa interactivo · © OpenStreetMap contributors
+        </p>
+      </div>
+    </div>
+  </div>
+
   <!-- ═══════════════════════════════════════════ FOOTER -->
   <footer>
     <div class="container">
@@ -2031,6 +2351,431 @@
     }, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
 
     document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+    // ═══════════════════════════════════════════ DESTINATION MINISITES
+
+    const DESTINATIONS = [
+      {
+        id: 'oslo',
+        name: 'Oslo',
+        slug: 'oslo',
+        lat: 59.9139, lng: 10.7522, zoom: 13,
+        heroImg: 'https://images.unsplash.com/photo-1560698862-c340d3c8bf38?w=1200&h=500&fit=crop&auto=format&q=85',
+        badge: null,
+        tagline: 'Capital noruega a orillas del fiordo',
+        description: [
+          'Oslo es una de las capitales más singulares de Europa: una metrópolis moderna que convive con bosques, fiordos y una herencia vikinga milenaria. Fundada en el año 1000 por el rey Harald III, hoy alberga más de 700.000 habitantes y es consistentemente clasificada como una de las ciudades con mayor calidad de vida del mundo.',
+          'El Oslofjord vertebra la ciudad: desde el puerto del barrio de Aker Brygge se puede ver cómo los veleros modernos y los ferries comparten aguas con réplicas de drakar vikingos. En verano los habitantes se lanzan al agua en las playas del fiordo y el ambiente es desenfadado y festivo.',
+          'El barrio de Grünerløkka es el corazón hipster de la ciudad, con mercadillos, cafeterías de especialidad y street art. Contrasta con la solemnidad del barrio histórico y el elegante Frogner, hogar del imponente Parque Vigeland. El museo de Munch, el Astrup Fearnley y el futuro museo de barcos vikingos hacen de Oslo una capital cultural de primer orden.',
+          'Para el viajero con camper, Oslo es el punto de partida perfecto: el camping Ekeberg tiene vistas al fiordo y al skyline de la ciudad, y está a apenas 15 minutos del centro en tranvía.',
+        ],
+        highlights: [
+          { icon: '🗿', name: 'Parque Vigeland', desc: 'El mayor parque de esculturas de un solo artista del mundo. 212 esculturas en bronce, granito y forja. Entrada gratuita.' },
+          { icon: '⚔️', name: 'Museo Vikingo', desc: 'Tres drakkars originales del siglo IX perfectamente conservados. El museo más visitado de Noruega.' },
+          { icon: '🎨', name: 'Museo Munch', desc: 'La mayor colección de obras de Edvard Munch, incluidas varias versiones de El Grito. Edificio moderno junto al fiordo.' },
+          { icon: '🏰', name: 'Fortaleza Akershus', desc: 'Castillo medieval del siglo XIV con vistas panorámicas al fiordo. Entrada gratuita al recinto exterior.' },
+          { icon: '🚢', name: 'Aker Brygge', desc: 'Puerto reformado con restaurantes, tiendas y ambiente mediterráneo en verano. El mejor lugar para el atardecer.' },
+        ],
+        kids: 'Los drakkars vikingos son mágicos para niños de 5 años. En el Parque Vigeland pueden correr libremente entre las esculturas sin restricciones. En verano, las playas del fiordo (Huk, Bygdøy) son perfectas para bañarse.',
+        days: ['dc-0', 'dc-1'],
+        mapMarkers: [
+          { lat: 59.9272, lng: 10.6997, label: 'Parque Vigeland' },
+          { lat: 59.9050, lng: 10.6993, label: 'Museo Vikingo' },
+          { lat: 59.9072, lng: 10.7397, label: 'Museo Munch' },
+          { lat: 59.9083, lng: 10.7361, label: 'Fortaleza Akershus' },
+          { lat: 59.9103, lng: 10.7308, label: 'Aker Brygge' },
+        ],
+        drivingFrom: null, drivingKm: null, drivingTime: null,
+      },
+      {
+        id: 'lillehammer',
+        name: 'Lillehammer',
+        slug: 'lillehammer',
+        lat: 61.1151, lng: 10.4661, zoom: 13,
+        heroImg: 'https://images.unsplash.com/photo-1513519107127-1bed33748e4c?w=1200&h=500&fit=crop&auto=format&q=85',
+        badge: null,
+        tagline: 'Ciudad olímpica junto al lago Mjøsa',
+        description: [
+          'Lillehammer es conocida mundialmente por haber acogido los Juegos Olímpicos de Invierno de 1994, pero la ciudad tiene mucho más que ofrecer que sus instalaciones deportivas. Situada a orillas del lago Mjøsa, el mayor de Noruega, y enclavada en el fértil valle de Gudbrandsdalen, es una ciudad de tamaño humano (28.000 habitantes) con un ambiente acogedor y un casco histórico perfectamente conservado.',
+          'El Maihaugen es el museo al aire libre más grande de Escandinavia: 185 edificios históricos trasladados desde distintos puntos de Noruega reconstituyen cómo vivían los campesinos y artesanos noruegos entre los siglos XIII y XX. Es una experiencia inmersiva única que va mucho más allá del típico museo.',
+          'Para los aficionados al deporte, el trampolín olímpico de Lysgårdsbakken ofrece vistas espectaculares del valle y del lago. El Håkons Hall, pabellón de hockey, y el campo de trineo/bobsled de Hunderfossen siguen en activo y permiten experiencias únicas.',
+          'El lago Mjøsa, con sus 117 km de longitud, es perfecto para actividades acuáticas en verano. El vapor histórico "Skibladner" (el barco de vapor más antiguo del mundo en servicio) realiza cruceros por el lago en temporada estival.',
+        ],
+        highlights: [
+          { icon: '🏘️', name: 'Maihaugen', desc: 'Museo al aire libre con 185 edificios históricos noruegos. El más grande de Escandinavia. Absolutamente imprescindible.' },
+          { icon: '🎿', name: 'Trampolín Olímpico', desc: 'El trampolín de los JJOO de 1994 con telecabina hasta la cima. Vistas épicas del lago y el valle. Activo en verano.' },
+          { icon: '🚢', name: 'Vapor Skibladner', desc: 'El barco de vapor más antiguo del mundo en servicio activo (1856). Cruceros de verano por el lago Mjøsa.' },
+          { icon: '🛷', name: 'Pista de Bobsled', desc: 'La pista olímpica de Hunderfossen permite experiencias de trineo estival. Emocionante para toda la familia.' },
+        ],
+        kids: 'El Maihaugen tiene actividades específicas para niños donde pueden vestirse con trajes históricos y participar en talleres. Los animales de granja y los edificios de cuento son un éxito garantizado a los 5 años.',
+        days: ['dc-2'],
+        mapMarkers: [
+          { lat: 61.1279, lng: 10.4497, label: 'Maihaugen' },
+          { lat: 61.1042, lng: 10.4642, label: 'Trampolín Olímpico' },
+          { lat: 61.1196, lng: 10.4591, label: 'Puerto / Skibladner' },
+        ],
+        drivingFrom: 'Oslo', drivingKm: 185, drivingTime: '2h 15min',
+      },
+      {
+        id: 'roros',
+        name: 'Røros',
+        slug: 'roros',
+        lat: 62.5743, lng: 11.3867, zoom: 14,
+        heroImg: 'https://images.unsplash.com/photo-1604240957006-a961a2920f8b?w=1200&h=500&fit=crop&auto=format&q=85',
+        badge: 'UNESCO',
+        tagline: 'Ciudad minera medieval, Patrimonio de la Humanidad',
+        description: [
+          'Røros es uno de los lugares más singulares de toda Escandinavia: una ciudad minera del siglo XVII perfectamente conservada que lleva desde 1980 en la lista de Patrimonio Mundial de la UNESCO. Sus calles empedradas, sus casas de madera pintadas de colores oscuros y la imponente iglesia barroca conforman un ambiente de cuento que parece suspendido en el tiempo.',
+          'La ciudad debe su existencia al descubrimiento de cobre en 1644. Durante 333 años, hasta 1977, las minas Røros Kobberverk extrajeron metal de las montañas circundantes. La fundición (Smelthytta) está ahora reconvertida en museo y permite descender a las entrañas de la mina.',
+          'A 628 metros sobre el nivel del mar, Røros tiene un clima continental extremo: los inviernos son los más fríos de Noruega (hasta -50°C se han registrado), pero los veranos son suaves y soleados. En agosto, el paisaje de alta montaña con brezales y renos salvajes es de una belleza austera y poderosa.',
+          'La calle principal Bergmannsgata concentra las casas más fotogénicas: edificios de madera del XVIII con tejados de turba, ahora convertidos en tiendas de artesanía, cafés y galerías. El mercado semanal de verano (Martnan) es una tradición que lleva celebrándose ininterrumpidamente desde el siglo XVII.',
+        ],
+        highlights: [
+          { icon: '⛏️', name: 'Fundición Smelthytta', desc: 'Museo industrial en la fundición original. Visitas guiadas a las minas subterráneas. La mejor atracción de la ciudad.' },
+          { icon: '⛪', name: 'Iglesia de Røros', desc: 'Iglesia barroca de 1784, la más grande de Noruega en su época. Capacidad para 1.600 personas en una ciudad de 3.500.' },
+          { icon: '🏘️', name: 'Bergmannsgata', desc: 'La calle histórica con las casas de madera más fotogénicas. Todo el centro es Patrimonio UNESCO.' },
+          { icon: '🦌', name: 'Renos en libertad', desc: 'Los alrededores de Røros tienen manadas de renos semisalvajes. Es habitual verlos desde la carretera.' },
+        ],
+        kids: 'La mina subterránea es una aventura impresionante para los niños —como entrar en una película de enanos. Las calles empedradas y las casas de colores son mágicas. Si hay suerte, ver renos cerca de la ciudad.',
+        days: ['dc-3'],
+        mapMarkers: [
+          { lat: 62.5736, lng: 11.3832, label: 'Smelthytta (Fundición)' },
+          { lat: 62.5749, lng: 11.3884, label: 'Iglesia de Røros' },
+          { lat: 62.5743, lng: 11.3867, label: 'Bergmannsgata' },
+        ],
+        drivingFrom: 'Lillehammer', drivingKm: 215, drivingTime: '2h 45min',
+      },
+      {
+        id: 'trondheim',
+        name: 'Trondheim',
+        slug: 'trondheim',
+        lat: 63.4305, lng: 10.3951, zoom: 13,
+        heroImg: 'https://images.unsplash.com/photo-1517904518766-16c4f3ab0293?w=1200&h=500&fit=crop&auto=format&q=85',
+        badge: null,
+        tagline: 'Antigua capital vikinga del norte de Europa',
+        description: [
+          'Trondheim fue la primera capital de Noruega y durante siglos el centro espiritual del país. Fundada en el año 997 por el rey Olaf Tryggvason, su nombre original era Nidaros —el nombre que conserva su catedral, la más importante del mundo nórdico. Hoy es la tercera ciudad de Noruega con 200.000 habitantes y una vibrante universidad tecnológica que le da un ambiente joven y cosmopolita.',
+          'La catedral de Nidaros es el edificio medieval más grande de Escandinavia y el destino de peregrinación por excelencia del norte de Europa, comparable a Santiago de Compostela. El Camino de San Olav (Olavsruta) conecta Oslo con Trondheim siguiendo la ruta de los antiguos peregrinos.',
+          'El barrio de Bakklandet, con sus casas de madera pintadas de colores sobre pilotes en el río Nid, es la postal más icónica de Trondheim. Los almacenes medievales de madera que se reflejan en el río compiten con los de Bergen por ser los más fotografiados de Noruega.',
+          'El puente Gamle Bybro del siglo XVIII, la fortaleza Kristiansten en lo alto de la colina y el mercado histórico de Torvet completan una ciudad que sorprende por su combinación de monumentalidad histórica y ambiente distendido de estudiantes.',
+        ],
+        highlights: [
+          { icon: '⛩️', name: 'Catedral de Nidaros', desc: 'El edificio gótico más grande de Escandinavia. Lugar de coronación de los reyes noruegos. Impresionante rosetón y fachada.' },
+          { icon: '🌉', name: 'Bakklandet', desc: 'Barrio de casas de colores sobre el río. Las mejores cafeterías de la ciudad y ambiente bohemio. Cruzar el Gamle Bybro.' },
+          { icon: '🏰', name: 'Fortaleza Kristiansten', desc: 'Fortaleza del XVII en la colina con vistas panorámicas de la ciudad y el fiordo de Trondheim.' },
+          { icon: '🐟', name: 'Mercado de Torvet', desc: 'La plaza mayor con el mercado de pescado y la estatua ecuestre de Olaf Tryggvason en el centro.' },
+        ],
+        kids: 'La catedral de Nidaros tiene visitas específicas para familias. Bakklandet es perfecto para que los niños corran sin peligro de tráfico. El área de juegos junto al río es un alivio para los pequeños.',
+        days: ['dc-4'],
+        mapMarkers: [
+          { lat: 63.4269, lng: 10.3969, label: 'Catedral de Nidaros' },
+          { lat: 63.4316, lng: 10.4046, label: 'Bakklandet' },
+          { lat: 63.4342, lng: 10.4083, label: 'Gamle Bybro' },
+          { lat: 63.4379, lng: 10.4113, label: 'Fortaleza Kristiansten' },
+        ],
+        drivingFrom: 'Røros', drivingKm: 156, drivingTime: '1h 55min',
+      },
+      {
+        id: 'alesund',
+        name: 'Ålesund',
+        slug: 'alesund',
+        lat: 62.4724, lng: 6.1549, zoom: 13,
+        heroImg: 'https://images.unsplash.com/photo-1511346408292-8754df323b0c?w=1200&h=500&fit=crop&auto=format&q=85',
+        badge: null,
+        tagline: 'La ciudad Art Nouveau del archipiélago',
+        description: [
+          'Ålesund es única entre las ciudades noruegas: tras un devastador incendio en 1904 que destruyó casi toda la ciudad en una sola noche, fue reconstruida en apenas tres años en un estilo Art Nouveau homogéneo que hoy la convierte en la mejor concentración de arquitectura modernista del norte de Europa. Mientras Oslo y Bergen tienen ejemplos puntuales, Ålesund es Art Nouveau de forma masiva y coherente.',
+          'La ciudad se extiende sobre varios islotes conectados por puentes, con el fiordo y el océano siempre presentes. Esta configuración geográfica —tierra, agua y montaña entrelazadas— la hace extraordinariamente fotogénica desde cualquier ángulo.',
+          'El monte Aksla (189m), accesible por 418 escalones desde el centro, ofrece una de las vistas más espectaculares de toda Noruega: la ciudad entera dibujada sobre el archipiélago, los fiordos abriéndose hacia el este y el océano Atlántico al oeste. Al atardecer en agosto es una experiencia transformadora.',
+          'El Atlanterhavsparken (Parque del Atlántico) es uno de los acuarios más grandes de Escandinavia y tiene exhibiciones excepcionales de la fauna marina local, incluyendo focas, nutrias y tiburones de aguas frías. Perfecto para una tarde si el tiempo no acompaña.',
+        ],
+        highlights: [
+          { icon: '🏛️', name: 'Centro Art Nouveau', desc: 'Todo el casco histórico reconstruido en 1904-07 en estilo modernista. El mejor conjunto Art Nouveau del norte de Europa.' },
+          { icon: '⛰️', name: 'Monte Aksla', desc: '418 escalones hasta la cima (o teleférico). Las mejores vistas de Noruega occidental sobre ciudad, fiordos y océano.' },
+          { icon: '🦭', name: 'Atlanterhavsparken', desc: 'Acuario del Atlántico con focas, tiburones y fauna marina noruega. Uno de los mejores de Escandinavia.' },
+          { icon: '🎨', name: 'Museo Art Nouveau', desc: 'El único museo dedicado exclusivamente al Art Nouveau en Noruega, en un edificio de 1905 perfectamente restaurado.' },
+        ],
+        kids: 'El acuario Atlanterhavsparken tiene shows de alimentación de focas que son un espectáculo asegurado. Los 418 escalones del monte Aksla son una aventura de escalada para los pequeños —llegar arriba da una sensación de logro enorme.',
+        days: ['dc-5'],
+        mapMarkers: [
+          { lat: 62.4704, lng: 6.1527, label: 'Centro Art Nouveau' },
+          { lat: 62.4733, lng: 6.1495, label: 'Monte Aksla (cima)' },
+          { lat: 62.4643, lng: 6.0931, label: 'Atlanterhavsparken' },
+        ],
+        drivingFrom: 'Trondheim', drivingKm: 240, drivingTime: '2h 45min',
+      },
+      {
+        id: 'geiranger',
+        name: 'Geirangerfjord',
+        slug: 'geiranger',
+        lat: 62.0998, lng: 7.2052, zoom: 12,
+        heroImg: 'https://images.unsplash.com/photo-1669575673050-916db4e5035f?w=1200&h=500&fit=crop&auto=format&q=85',
+        badge: 'UNESCO',
+        tagline: 'El fiordo más famoso y espectacular del mundo',
+        description: [
+          'El Geirangerfjord es, sencillamente, el fiordo más famoso del mundo. Declarado Patrimonio Mundial por la UNESCO en 2005 junto al Nærøyfjord, sus 15 km de longitud concentran una belleza sobrecogedora: paredes de roca que se elevan 1.400 metros sobre el agua, cascadas que caen directamente al fiordo desde lo alto, y un color azul-verde del agua que cambia con la luz del día.',
+          'Las Siete Hermanas (De Syv Søstrene) son la cascada más famosa del fiordo: siete hilos de agua que caen en paralelo desde 250 metros de altura. Frente a ellas, al otro lado del fiordo, la cascada El Pretendiente (Friaren) parece hacerles la corte. En agosto el caudal baja respecto a la primavera, pero el espectáculo sigue siendo impresionante.',
+          'El punto de vista de Dalsnibba (1.476m sobre el nivel del mar) es el mirador de fiordo más alto de Noruega accesible por carretera. Desde allí se ve el Geirangerfjord y el pueblo de Geiranger como un mapa en miniatura. La carretera de acceso (Nibbevegen) tiene 22 curvas y es en sí misma una experiencia.',
+          'El pueblo de Geiranger (apenas 250 habitantes) vive casi exclusivamente del turismo de verano. Los cruceros hacen que en agosto el lugar esté muy concurrido durante el día, pero al atardecer —cuando los barcos se marchan— recupera una quietud mágica. Dormir con el camper junto al fiordo es una experiencia que no se olvida.',
+        ],
+        highlights: [
+          { icon: '💦', name: 'Las Siete Hermanas', desc: 'La cascada símbolo del fiordo. Siete caídas paralelas de 250m. Se ve perfectamente desde el ferry o la orilla opuesta.' },
+          { icon: '🚗', name: 'Mirador Dalsnibba', desc: '1.476m sobre el mar, el mirador de fiordo más alto de Noruega en coche. La vista más dramática del Geirangerfjord.' },
+          { icon: '⛴️', name: 'Ferry del Fiordo', desc: 'El trayecto Geiranger-Hellesylt (1h) es obligatorio. Crucero entre cascadas y paredes de roca verticales.' },
+          { icon: '🛤️', name: 'Ruta de las Águilas', desc: 'La Ørnvegen (Ruta de las Águilas) baja desde Eidsdal hasta el fiordo con 11 curvas y miradores espectaculares.' },
+        ],
+        kids: 'El ferry es el favorito garantizado de todos los niños —un barco de verdad durante una hora entre cascadas y montañas. En Dalsnibba es probable ver nieve en agosto, lo que para una niña de 5 años es magia pura.',
+        days: ['dc-6'],
+        mapMarkers: [
+          { lat: 62.1031, lng: 7.2065, label: 'Pueblo de Geiranger' },
+          { lat: 62.0878, lng: 7.1437, label: 'Cascada Siete Hermanas' },
+          { lat: 62.0294, lng: 7.2764, label: 'Mirador Dalsnibba' },
+          { lat: 62.1054, lng: 6.9869, label: 'Ferry Geiranger-Hellesylt' },
+        ],
+        drivingFrom: 'Ålesund', drivingKm: 115, drivingTime: '2h 30min',
+      },
+      {
+        id: 'flam',
+        name: 'Flåm',
+        slug: 'flam',
+        lat: 60.8631, lng: 7.1195, zoom: 13,
+        heroImg: 'https://images.unsplash.com/photo-1738574556434-60a48d6711a0?w=1200&h=500&fit=crop&auto=format&q=85',
+        badge: 'UNESCO',
+        tagline: 'El tren de montaña más espectacular del mundo',
+        description: [
+          'Flåm es un pueblo de apenas 500 habitantes en el extremo del Aurlandsfjord (un brazo del Sognefjord, el fiordo más largo del mundo), pero recibe más de un millón de visitantes al año. La razón es doble: el Flåmsbana y el Nærøyfjord, dos de las experiencias naturales más espectaculares de Europa.',
+          'El Flåmsbana es considerado frecuentemente el trayecto ferroviario más bello del mundo. En 55 minutos y 20 km, el tren asciende 863 metros desde Flåm hasta Myrdal atravesando paisajes de tirones: cascadas que parecen caer sobre los vagones, túneles, viaductos y valles que se abren de repente. La parada frente a la cascada Kjosfossen, donde emerge una figura mítica bailando, es un momento genuinamente mágico.',
+          'El Nærøyfjord, el fiordo más estrecho de Europa (apenas 250m de ancho en su punto más angosto), es Patrimonio UNESCO junto al Geirangerfjord. Un crucero desde Flåm permite ver sus paredes de 1.700m de altura casi cerrándose sobre el barco. En agosto el paisaje es puro verde y cascadas.',
+          'El Sognefjord Road trip que conecta Flåm con Bergen a través de ferrys y la Scenic Route Aurlandsvegen (la "Carretera de la Nieve") es uno de los recorridos más espectaculares de la ruta. El mirador de Stegastein, a 650m sobre el fiordo, ofrece una de las vistas más dramáticas del viaje.',
+        ],
+        highlights: [
+          { icon: '🚂', name: 'Flåmsbana', desc: 'El tren de montaña más espectacular del mundo. 20km, 863m de desnivel, 55 minutos de paisajes increíbles. Reservar con antelación.' },
+          { icon: '⛴️', name: 'Crucero Nærøyfjord', desc: 'El fiordo más estrecho de Europa, Patrimonio UNESCO. El crucero Flåm-Gudvangen pasa bajo paredes de 1.700m.' },
+          { icon: '🌊', name: 'Mirador Stegastein', desc: 'Plataforma de madera a 650m sobre el Aurlandsfjord. Una de las mejores vistas de todo el viaje por Noruega.' },
+          { icon: '🏊', name: 'Kayak en el fiordo', desc: 'Varias empresas ofrecen kayak en el Aurlandsfjord. Remar entre paredes de 1.000m es una experiencia transformadora.' },
+        ],
+        kids: 'El Flåmsbana es perfecto para niños: el tren, los túneles, la parada de la cascada con la figura bailando, y la emoción de los frenos humeando en las curvas. Combinar tren de subida con kayak o ferry de bajada.',
+        days: ['dc-7'],
+        mapMarkers: [
+          { lat: 60.8631, lng: 7.1195, label: 'Estación Flåm (Flåmsbana)' },
+          { lat: 60.7282, lng: 7.0897, label: 'Nærøyfjord (punto más estrecho)' },
+          { lat: 60.8463, lng: 7.0957, label: 'Mirador Stegastein' },
+          { lat: 60.8656, lng: 7.1133, label: 'Puerto / Cruceros' },
+        ],
+        drivingFrom: 'Geiranger', drivingKm: 270, drivingTime: '4h (con ferrys)',
+      },
+      {
+        id: 'bergen',
+        name: 'Bergen',
+        slug: 'bergen',
+        lat: 60.3913, lng: 5.3221, zoom: 13,
+        heroImg: 'https://images.unsplash.com/photo-1526908234827-dcf46d772c3c?w=1200&h=500&fit=crop&auto=format&q=85',
+        badge: null,
+        tagline: 'La ciudad de las siete montañas y el Bryggen UNESCO',
+        description: [
+          'Bergen es, para muchos viajeros, la ciudad más bonita de Noruega. Enclavada entre siete montañas y abierta al fiordo, combina un casco histórico medieval perfectamente conservado con una vida cultural vibrante, un mercado de pescado legendario y una tradición marítima profunda. Es la segunda ciudad del país (280.000 habitantes) y la "capital" no oficial de los fiordos occidentales.',
+          'El Bryggen —las casas hanseáticas de madera de colores del siglo XIV que bordean el puerto— es Patrimonio UNESCO desde 1979 y el símbolo absoluto de Bergen. Los comerciantes de la Liga Hanseática establecieron aquí una de sus factorías más importantes, y los edificios que han sobrevivido a los incendios del pasado son un testimonio extraordinario del comercio medieval europeo.',
+          'Las siete montañas que rodean la ciudad son su característica geográfica definitoria. El Fløibanen (funicular) sube en 8 minutos al monte Fløyen (320m), desde donde la vista de la ciudad, el fiordo y las montañas más lejanas es absolutamente espectacular. Desde arriba se puede hacer senderismo hasta el vecino monte Rundemanen.',
+          'El mercado de pescado (Fisketorget) en el puerto ha estado funcionando ininterrumpidamente durante 800 años. Aunque hoy es más orientado al turismo que antaño, sigue siendo el lugar perfecto para probar salmón fresco, langostinos, cangrejos y toda la riqueza del mar noruego.',
+        ],
+        highlights: [
+          { icon: '🏘️', name: 'Bryggen', desc: 'Las casas hanseáticas medievales del puerto, Patrimonio UNESCO. El símbolo de Bergen y de toda Noruega occidental.' },
+          { icon: '🚡', name: 'Fløibanen', desc: 'Funicular que sube al monte Fløyen en 8 minutos. Vistas incomparables y punto de partida para senderismo en el bosque.' },
+          { icon: '🐟', name: 'Mercado de Pescado', desc: '800 años de historia comercial. El mejor lugar para probar salmón, langostinos y cangrejo fresco directamente del fiordo.' },
+          { icon: '🎻', name: 'Grieg Museum', desc: 'La villa de Edvard Grieg en Troldhaugen, a 8km del centro. El estudio donde compuso Peer Gynt con vistas al lago.' },
+        ],
+        kids: 'El Fløibanen es una aventura para los niños: el funicular, el bosque arriba, los ciervos que se acercan, y los toboganes de madera en el parque de la cima. El mercado de pescado con sus cangrejos en vivo siempre genera reacciones de asco-fascinación en los pequeños.',
+        days: ['dc-8'],
+        mapMarkers: [
+          { lat: 60.3975, lng: 5.3243, label: 'Bryggen (UNESCO)' },
+          { lat: 60.3929, lng: 5.3254, label: 'Mercado de Pescado' },
+          { lat: 60.3944, lng: 5.3282, label: 'Estación Fløibanen' },
+          { lat: 60.3844, lng: 5.2920, label: 'Grieg Museum Troldhaugen' },
+        ],
+        drivingFrom: 'Flåm', drivingKm: 150, drivingTime: '2h 30min',
+      },
+      {
+        id: 'eidfjord',
+        name: 'Eidfjord · Hardangerfjord',
+        slug: 'eidfjord',
+        lat: 60.4647, lng: 7.0735, zoom: 12,
+        heroImg: 'https://images.unsplash.com/photo-1500207432837-973f6b39fcdc?w=1200&h=500&fit=crop&auto=format&q=85',
+        badge: null,
+        tagline: 'El cuarto fiordo más largo del mundo, cascadas y renos',
+        description: [
+          'El Hardangerfjord es el cuarto fiordo más largo del mundo (179 km) y una de las regiones más fértiles y variadas de Noruega. Al contrario que el Geirangerfjord —vertical, dramático, desnudo— el Hardangerfjord es más suave y habitable: sus orillas están cubiertas de huertos de manzanos y cerezos que en mayo se cubren de flores, y los pueblos que lo bordean tienen un carácter más tranquilo y auténtico.',
+          'Eidfjord, al extremo oriental del fiordo, es la puerta de entrada a la meseta de Hardangervidda, el mayor parque nacional de Noruega y el mayor altiplano de Europa del Norte. A 1.200m de altitud, la Hardangervidda alberga la mayor manada de renos salvajes de Europa —aproximadamente 10.000 animales. En agosto es frecuente verlos a corta distancia.',
+          'La cascada de Vøringsfossen (183m de caída libre) es una de las más altas de Noruega y uno de los destinos más visitados del país. El acceso desde el borde del plateau ofrece una vista de vértigo hacia el cañón donde cae el agua. La cascada de Steinsdalsfossen, cerca de Norheimsund, tiene la particularidad de que se puede caminar detrás del agua.',
+          'El trayecto de Bergen a Eidfjord es en sí mismo una experiencia: se pasa por el puente colgante de Hardanger (la mayor ingeniería civil de Noruega), los túneles bajo los fiordos, y el tranquilo pueblo de Øystese con sus huertos a orillas del agua.',
+        ],
+        highlights: [
+          { icon: '💦', name: 'Vøringsfossen', desc: 'La cascada más famosa de Noruega. 183m de caída libre hasta el cañón del río Bjoreio. Vista de vértigo absoluto.' },
+          { icon: '🦌', name: 'Hardangervidda', desc: 'El mayor altiplano de Europa del Norte con 10.000 renos salvajes. En agosto es frecuente verlos a pocos metros.' },
+          { icon: '💦', name: 'Steinsdalsfossen', desc: 'Cascada única: un sendero pasa por detrás del agua. Los niños pueden meterse entre el agua y la roca.' },
+          { icon: '🌸', name: 'Hardangerfjord', desc: 'El cuarto fiordo más largo del mundo, con orillas de huertos de manzanos. El ferry cruzar el fiordo es imprescindible.' },
+        ],
+        kids: 'Steinsdalsfossen es la atracción definitiva para niños: ponerse detrás de una cascada sin mojarse (casi) es algo que no olvidarán. Los renos en Hardangervidda —si hay suerte de verlos de cerca— son también un momento mágico.',
+        days: ['dc-9', 'dc-10'],
+        mapMarkers: [
+          { lat: 60.3985, lng: 6.9285, label: 'Steinsdalsfossen' },
+          { lat: 60.4647, lng: 7.0735, label: 'Eidfjord (pueblo)' },
+          { lat: 60.4283, lng: 7.2122, label: 'Vøringsfossen' },
+          { lat: 60.5667, lng: 7.2000, label: 'Hardangervidda' },
+        ],
+        drivingFrom: 'Bergen', drivingKm: 145, drivingTime: '2h 15min',
+      },
+    ];
+
+    let _destMap = null;
+
+    function openDestination(id) {
+      const dest = DESTINATIONS.find(d => d.id === id);
+      if (!dest) return;
+      const modal = document.getElementById('dest-modal');
+
+      // Fill hero
+      modal.querySelector('#dm-hero-img').src = dest.heroImg;
+      modal.querySelector('#dm-hero-img').alt = dest.name;
+      modal.querySelector('#dm-title').textContent = dest.name;
+      const heroTitle = modal.querySelector('#dm-hero-title');
+      if (heroTitle) heroTitle.textContent = dest.name;
+      modal.querySelector('#dm-tagline').textContent = dest.tagline;
+      const badge = modal.querySelector('#dm-badge');
+      if (dest.badge) { badge.textContent = '🌍 ' + dest.badge; badge.style.display = 'inline-flex'; }
+      else badge.style.display = 'none';
+
+      // Driving info
+      const driving = modal.querySelector('#dm-driving');
+      if (dest.drivingFrom) {
+        driving.innerHTML = `<i data-lucide="navigation" width="14" height="14"></i> Desde ${dest.drivingFrom}: ${dest.drivingKm} km · ${dest.drivingTime}`;
+        driving.style.display = 'flex';
+        lucide.createIcons({ nodes: [driving] });
+      } else driving.style.display = 'none';
+
+      // Description tab
+      const descEl = modal.querySelector('#dm-desc');
+      descEl.innerHTML = dest.description.map(p => `<p>${p}</p>`).join('');
+
+      // Kids tip
+      modal.querySelector('#dm-kids').textContent = dest.kids;
+
+      // Day badges
+      const daysEl = modal.querySelector('#dm-days');
+      daysEl.innerHTML = dest.days.map((dcId, i) => {
+        const num = parseInt(dcId.replace('dc-', '')) + 1;
+        return `<button class="dm-day-badge" onclick="closeDestination();setTimeout(()=>{scrollToDay('${dcId}')},400)">Día ${num}</button>`;
+      }).join('');
+
+      // Highlights tab
+      const hlEl = modal.querySelector('#dm-highlights');
+      hlEl.innerHTML = dest.highlights.map(h => `
+        <div class="dest-highlight-card">
+          <div class="dh-icon">${h.icon}</div>
+          <div class="dh-body"><strong>${h.name}</strong><p>${h.desc}</p></div>
+        </div>`).join('');
+
+      // Store dest for map tab
+      modal._currentDest = dest;
+
+      // Reset to first tab
+      destSwitchTab('desc', modal.querySelector('[data-dest-tab="desc"]'));
+
+      // Show modal
+      modal.style.display = 'flex';
+      requestAnimationFrame(() => { modal.classList.add('open'); });
+      document.body.style.overflow = 'hidden';
+
+      // Push URL
+      history.pushState({ destId: id }, '', '/destino/' + dest.slug);
+    }
+
+    function closeDestination() {
+      const modal = document.getElementById('dest-modal');
+      modal.classList.remove('open');
+      document.body.style.overflow = '';
+      setTimeout(() => { modal.style.display = 'none'; }, 420);
+      if (history.state && history.state.destId) history.back();
+      // Destroy map to allow re-init
+      if (_destMap) { _destMap.remove(); _destMap = null; }
+    }
+
+    function destSwitchTab(tabId, btn) {
+      const modal = document.getElementById('dest-modal');
+      modal.querySelectorAll('.dest-tab-btn').forEach(b => b.classList.remove('active'));
+      modal.querySelectorAll('.dest-panel').forEach(p => p.classList.remove('active'));
+      if (btn) btn.classList.add('active');
+      modal.querySelector('#dp-' + tabId).classList.add('active');
+
+      // Scroll modal so tabs bar is visible
+      const tabsBar = modal.querySelector('.dest-tabs-bar');
+      if (tabsBar) {
+        const offset = tabsBar.offsetTop - 60;
+        modal.scrollTo({ top: offset, behavior: 'smooth' });
+      }
+
+      if (tabId === 'map' && modal._currentDest) {
+        setTimeout(() => initDestMap(modal._currentDest), 50);
+      }
+    }
+
+    function initDestMap(dest) {
+      if (_destMap) { _destMap.remove(); _destMap = null; }
+      _destMap = L.map('dest-map').setView([dest.lat, dest.lng], dest.zoom);
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+        maxZoom: 18,
+      }).addTo(_destMap);
+
+      // Main marker
+      const mainIcon = L.divIcon({
+        html: `<div style="background:var(--teal);width:14px;height:14px;border-radius:50%;border:3px solid #fff;box-shadow:0 2px 8px rgba(0,0,0,.6)"></div>`,
+        className: '', iconSize: [14, 14], iconAnchor: [7, 7],
+      });
+      L.marker([dest.lat, dest.lng], { icon: mainIcon }).bindPopup(`<b>${dest.name}</b>`).addTo(_destMap).openPopup();
+
+      // Attraction markers
+      const attrIcon = L.divIcon({
+        html: `<div style="background:var(--amber);width:10px;height:10px;border-radius:50%;border:2px solid #fff;box-shadow:0 2px 6px rgba(0,0,0,.5)"></div>`,
+        className: '', iconSize: [10, 10], iconAnchor: [5, 5],
+      });
+      dest.mapMarkers.forEach(m => {
+        L.marker([m.lat, m.lng], { icon: attrIcon }).bindPopup(`<b>${m.label}</b>`).addTo(_destMap);
+      });
+    }
+
+    function scrollToDay(dcId) {
+      const el = document.getElementById(dcId);
+      if (!el) return;
+      document.getElementById('itinerario').scrollIntoView({ behavior: 'smooth' });
+      setTimeout(() => {
+        el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        const body = el.querySelector('.dc-body');
+        if (body && body.style.display === 'none') { el.querySelector('.dc-header').click(); }
+      }, 300);
+    }
+
+    // Handle browser back/forward
+    window.addEventListener('popstate', (e) => {
+      const modal = document.getElementById('dest-modal');
+      if (e.state && e.state.destId) {
+        openDestination(e.state.destId);
+      } else {
+        modal.classList.remove('open');
+        document.body.style.overflow = '';
+        setTimeout(() => { modal.style.display = 'none'; }, 420);
+        if (_destMap) { _destMap.remove(); _destMap = null; }
+      }
+    });
+
+    // On load: if URL has /destino/X, open that destination
+    (function checkInitialUrl() {
+      const m = location.pathname.match(/^\/destino\/([^/]+)/);
+      if (m) {
+        const slug = m[1];
+        const dest = DESTINATIONS.find(d => d.slug === slug);
+        if (dest) { document.addEventListener('DOMContentLoaded', () => openDestination(dest.id)); }
+      }
+    })();
   </script>
 </body>
 </html>
