@@ -420,21 +420,14 @@
       overflow: hidden;
       border: 1px solid var(--border);
       box-shadow: var(--shadow-lg);
-      min-height: 420px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
     }
-    .map-bg-svg {
-      position: absolute;
-      inset: 0;
+    #main-route-map {
+      height: 500px;
       width: 100%;
-      height: 100%;
+      border-radius: var(--radius-lg);
+      display: block;
     }
-    .map-bg-svg svg {
-      width: 100%;
-      height: 100%;
-    }
+    @media (max-width: 600px) { #main-route-map { height: 360px; } }
     .map-placeholder-content {
       position: relative;
       z-index: 1;
@@ -1391,69 +1384,7 @@
         <p class="section-subtitle">La ruta completa: Oslo → Lillehammer → Røros → Trondheim → Ålesund → Geiranger → Flåm → Bergen → Eidfjord → Oslo.</p>
       </div>
       <div class="map-placeholder reveal">
-        <div class="map-bg-svg">
-          <svg viewBox="0 0 1100 480" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice">
-            <!-- Ocean background -->
-            <rect width="1100" height="480" fill="#071828"/>
-            <!-- Simplified Norway coastline silhouette (decorative) -->
-            <path d="M 200 60 Q 230 40 260 55 Q 290 70 310 50 Q 340 30 370 60 Q 400 90 420 70 Q 450 50 480 80 Q 510 110 530 90 Q 560 70 590 100 Q 620 130 640 110 Q 660 90 680 120 Q 700 150 720 130 Q 750 110 780 140 Q 800 160 820 150 L 820 420 Q 700 400 600 410 Q 500 420 400 405 Q 300 390 200 400 Z" fill="#0d2035" opacity="0.9"/>
-            <!-- Fjord lines -->
-            <path d="M 350 200 Q 370 250 360 320 Q 355 370 340 400" stroke="#00b4d8" stroke-width="2" fill="none" opacity="0.3"/>
-            <path d="M 520 160 Q 540 210 530 280 Q 525 330 510 380" stroke="#00b4d8" stroke-width="2" fill="none" opacity="0.3"/>
-            <path d="M 650 180 Q 670 240 660 310 Q 655 360 640 410" stroke="#00b4d8" stroke-width="2" fill="none" opacity="0.25"/>
-            <!-- Water shimmer -->
-            <path d="M 100 300 Q 250 280 400 295 Q 550 310 700 290 Q 850 270 1000 285" stroke="#00b4d8" stroke-width="1" fill="none" opacity="0.15"/>
-            <path d="M 80 330 Q 240 315 390 328 Q 540 342 700 320 Q 860 298 1020 315" stroke="#00b4d8" stroke-width="1" fill="none" opacity="0.1"/>
-            <!-- Route line -->
-            <polyline points="480,380 490,320 510,280 490,240 450,200 430,170 470,150 530,160 560,180 580,200 610,230 640,210 680,190 720,180 750,200 760,230 740,270 720,310 700,350 660,370 620,380 580,390 530,395 480,390 440,385 400,375 360,360 320,360 300,380 290,400" stroke="#00b4d8" stroke-width="2.5" fill="none" opacity="0.7" stroke-dasharray="6,4"/>
-            <!-- City dots -->
-            <g fill="#00b4d8">
-              <circle cx="480" cy="382" r="6" opacity="0.9"/>
-              <circle cx="490" cy="320" r="5" opacity="0.8"/>
-              <circle cx="510" cy="278" r="5" opacity="0.8"/>
-              <circle cx="580" cy="200" r="5" opacity="0.8"/>
-              <circle cx="680" cy="190" r="5" opacity="0.8"/>
-              <circle cx="750" cy="200" r="5" opacity="0.8"/>
-              <circle cx="720" cy="180" r="5" opacity="0.8"/>
-              <circle cx="700" cy="350" r="5" opacity="0.8"/>
-              <circle cx="300" cy="380" r="5" opacity="0.8"/>
-            </g>
-            <!-- City labels -->
-            <g font-family="Inter, sans-serif" font-size="11" fill="#e2e8f0" opacity="0.9">
-              <text x="492" y="398">Oslo</text>
-              <text x="502" y="316">Lillehammer</text>
-              <text x="515" y="273">Røros</text>
-              <text x="592" y="196">Trondheim</text>
-              <text x="686" y="186">Ålesund</text>
-              <text x="726" y="196">Geiranger</text>
-              <text x="724" y="176">Flåm</text>
-              <text x="706" y="366">Bergen</text>
-              <text x="305" y="376">Eidfjord</text>
-            </g>
-            <!-- Gradient overlay for depth -->
-            <rect width="1100" height="480" fill="url(#mapGrad)" opacity="0.4"/>
-            <defs>
-              <radialGradient id="mapGrad" cx="50%" cy="50%" r="70%">
-                <stop offset="0%" stop-color="transparent"/>
-                <stop offset="100%" stop-color="#070d1a"/>
-              </radialGradient>
-            </defs>
-          </svg>
-        </div>
-        <div class="map-placeholder-content">
-          <div class="map-placeholder-icon">🗺️</div>
-          <h3 class="map-placeholder-title">Ruta completa en Google Maps</h3>
-          <p class="map-placeholder-text">Oslo → Lillehammer → Røros → Trondheim → Ålesund → Geiranger → Flåm → Bergen → Eidfjord → Oslo</p>
-          <a
-            href="https://www.google.com/maps/dir/Oslo/Lillehammer/R%C3%B8ros/Trondheim/%C3%85lesund/Geiranger/Fl%C3%A5m/Bergen/Eidfjord/Oslo"
-            target="_blank"
-            rel="noopener"
-            class="btn btn-primary map-open-btn"
-          >
-            <i data-lucide="map" width="18" height="18"></i>
-            Abrir ruta en Google Maps
-          </a>
-        </div>
+        <div id="main-route-map"></div>
       </div>
       <div class="map-actions reveal">
         <button class="btn btn-primary" onclick="copyMapsLink()">
@@ -2355,6 +2286,74 @@
     }, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
 
     document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+    // ═══════════════════════════════════════════ MAIN ROUTE MAP
+    const ROUTE_STOPS = [
+      { name: 'Oslo',         lat: 59.9139,  lng: 10.7522, order: 1  },
+      { name: 'Lillehammer',  lat: 61.1151,  lng: 10.4661, order: 2  },
+      { name: 'Røros',        lat: 62.5743,  lng: 11.3867, order: 3  },
+      { name: 'Trondheim',    lat: 63.4305,  lng: 10.3951, order: 4  },
+      { name: 'Ålesund',      lat: 62.4724,  lng: 6.1549,  order: 5  },
+      { name: 'Geiranger',    lat: 62.0998,  lng: 7.2052,  order: 6  },
+      { name: 'Flåm',         lat: 60.8631,  lng: 7.1195,  order: 7  },
+      { name: 'Bergen',       lat: 60.3913,  lng: 5.3221,  order: 8  },
+      { name: 'Eidfjord',     lat: 60.4647,  lng: 7.0735,  order: 9  },
+      { name: 'Oslo',         lat: 59.9139,  lng: 10.7522, order: 10 },
+    ];
+
+    function initMainMap() {
+      const mapEl = document.getElementById('main-route-map');
+      if (!mapEl || mapEl._leaflet_id) return;
+
+      const map = L.map('main-route-map', { zoomControl: true, scrollWheelZoom: false }).fitBounds([
+        [59.0, 4.5], [64.2, 12.5]
+      ]);
+
+      L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+        attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> © <a href="https://carto.com/">CARTO</a>',
+        subdomains: 'abcd',
+        maxZoom: 19,
+      }).addTo(map);
+
+      // Dashed route polyline
+      const latlngs = ROUTE_STOPS.map(s => [s.lat, s.lng]);
+      L.polyline(latlngs, {
+        color: '#00b4d8',
+        weight: 3,
+        opacity: 0.85,
+        dashArray: '8, 6',
+      }).addTo(map);
+
+      // Numbered markers
+      ROUTE_STOPS.forEach((stop, i) => {
+        const isFirst = i === 0;
+        const isLast = i === ROUTE_STOPS.length - 1;
+        const num = stop.order;
+        const bg = isFirst || isLast ? '#f59e0b' : '#00b4d8';
+        const icon = L.divIcon({
+          html: `<div style="background:${bg};color:#070d1a;width:26px;height:26px;border-radius:50%;border:2px solid #fff;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;font-family:Inter,sans-serif;box-shadow:0 2px 8px rgba(0,0,0,.55)">${isLast ? '★' : num}</div>`,
+          className: '',
+          iconSize: [26, 26],
+          iconAnchor: [13, 13],
+        });
+        L.marker([stop.lat, stop.lng], { icon })
+          .bindPopup(`<b>${isFirst ? '🏁 Inicio · ' : isLast ? '🏁 Fin · ' : num + '. '}${stop.name}</b>`)
+          .addTo(map);
+      });
+    }
+
+    // Init map when section scrolls into view
+    const mainMapObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          initMainMap();
+          mainMapObserver.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.1 });
+
+    const mainMapEl = document.getElementById('main-route-map');
+    if (mainMapEl) mainMapObserver.observe(mainMapEl);
 
     // ═══════════════════════════════════════════ DESTINATION MINISITES
 
