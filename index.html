@@ -1039,11 +1039,11 @@
     }
     .dest-hero {
       position: relative;
-      height: 320px;
+      height: 220px;
       flex-shrink: 0;
       overflow: hidden;
     }
-    @media (max-width: 600px) { .dest-hero { height: 220px; } }
+    @media (max-width: 600px) { .dest-hero { height: 160px; } }
     .dest-hero-img {
       width: 100%;
       height: 100%;
@@ -1224,10 +1224,11 @@
     .dest-back { display: flex; align-items: center; gap: 0.5rem; background: none; border: none; color: var(--text-muted); font-size: 0.9rem; font-weight: 600; cursor: pointer; padding: 0.4rem 0.75rem; border-radius: 8px; transition: var(--transition); min-width: 80px; }
     .dest-back:hover { background: var(--card-bg); color: var(--text); }
     .dest-topbar-title { font-size: 1rem; font-weight: 700; color: var(--text); text-align: center; }
-    .dest-hero-name { font-family: 'Playfair Display', serif; font-size: clamp(1.8rem, 5vw, 3rem); font-weight: 800; line-height: 1.1; margin-bottom: 0.35rem; }
-    .dest-hero-tagline { color: rgba(255,255,255,0.75); font-size: 1rem; margin-bottom: 0.75rem; }
+    .dest-hero-info { padding: 1.25rem 1.5rem 0.75rem; border-bottom: 1px solid var(--border); }
+    .dest-hero-name { font-family: 'Playfair Display', serif; font-size: clamp(1.6rem, 5vw, 2.6rem); font-weight: 800; line-height: 1.1; margin-bottom: 0.3rem; }
+    .dest-hero-tagline { color: var(--text-muted); font-size: 0.95rem; margin-bottom: 0.5rem; }
     .dest-driving { display: flex; align-items: center; gap: 0.4rem; font-size: 0.82rem; color: var(--teal); font-weight: 600; }
-    .dest-tabs-bar { display: flex; gap: 0; border-bottom: 1px solid var(--border); position: sticky; top: 60px; background: var(--navy); z-index: 5; padding: 1rem 1.5rem 0; overflow-x: auto; }
+    .dest-tabs-bar { display: flex; gap: 0; border-bottom: 1px solid var(--border); position: sticky; top: 60px; background: var(--navy); z-index: 5; padding: 0 1.5rem; overflow-x: auto; flex-shrink: 0; }
     .dest-kids-box { background: rgba(82,183,136,0.08); border: 1px solid rgba(82,183,136,0.25); border-radius: var(--radius); padding: 1rem 1.25rem; margin-bottom: 1.5rem; }
     .dest-kids-title { font-size: 0.85rem; font-weight: 700; color: var(--green); margin-bottom: 0.4rem; }
     .dest-kids-box p { font-size: 0.9rem; color: var(--text-muted); line-height: 1.6; margin: 0; }
@@ -2184,12 +2185,15 @@
     <!-- Hero -->
     <div class="dest-hero">
       <img id="dm-hero-img" src="" alt="" class="dest-hero-img">
-      <div class="dest-hero-overlay">
-        <div id="dm-badge" class="gallery-badge unesco" style="display:none;position:static;margin-bottom:.5rem"></div>
-        <h2 id="dm-hero-title" class="dest-hero-name"></h2>
-        <p id="dm-tagline" class="dest-hero-tagline"></p>
-        <div id="dm-driving" class="dest-driving" style="display:none"></div>
-      </div>
+      <div class="dest-hero-overlay"></div>
+    </div>
+
+    <!-- Hero info (below image, above tabs) -->
+    <div class="dest-hero-info">
+      <div id="dm-badge" class="gallery-badge unesco" style="display:none;position:static;margin-bottom:.5rem"></div>
+      <h2 id="dm-hero-title" class="dest-hero-name"></h2>
+      <p id="dm-tagline" class="dest-hero-tagline"></p>
+      <div id="dm-driving" class="dest-driving" style="display:none"></div>
     </div>
 
     <!-- Tabs -->
